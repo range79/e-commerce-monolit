@@ -4,14 +4,15 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import java.util.UUID
+import java.util.*
+
 @Entity
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private val id: UUID,
-    private val email: String,
-    private val username: String,
-    private val password: String,
-    private val role: Role
+    val id: UUID? = null,
+    val email: String,
+    val username: String,
+    val password: String,
+    val role: Role
 )
