@@ -8,12 +8,12 @@ data class RegisterRequest (
     val username: String,
     val password: String,
 ){
-    fun toUser(): User {
+    fun toUser(encodedPass: String): User {
         return User(
             id=null,
             email = email,
             username = username,
-            password=password,
+            password=encodedPass,
             role=Role.ROLE_USER
         )
     }
