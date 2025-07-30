@@ -50,7 +50,7 @@ class AuthServiceImpl(
     }
 
     private fun checkPass(password: String,userpass: String){
-        if(passwordEncoder.matches(password,userpass) ){
+        if(!passwordEncoder.matches(password,userpass) ){
                 throw AuthenticationException("Invalid username or password")
             }
     }
