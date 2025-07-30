@@ -6,10 +6,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val jwtFilter: JwtFilter
+) {
+
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http{
@@ -19,7 +23,7 @@ class SecurityConfig {
             authorizeHttpRequests {
                 authorize("/**", permitAll)
             }
-//            addFilterBefore {  }
+            addFilterBefore <UsernamePasswordAuthenticationFilter>(jwtFilter)
         }
         return http.build()
     }

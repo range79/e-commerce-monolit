@@ -14,7 +14,7 @@ data class RegisterRequest (
             email = email,
             username = username,
             password=encodedPass,
-            role=Role.ROLE_USER
+            role= Role.ROLE_USER
         )
     }
 }

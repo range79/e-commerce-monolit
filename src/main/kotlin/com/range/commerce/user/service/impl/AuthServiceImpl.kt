@@ -1,6 +1,6 @@
 package com.range.commerce.user.service.impl
 
-import com.range.commerce.common.util.JWTUtil
+import com.range.commerce.common.util.JwtUtil
 import com.range.commerce.user.domain.model.User
 import com.range.commerce.user.domain.repository.UserRepository
 import com.range.commerce.user.dto.request.LoginRequest
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 class AuthServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val userRepository: UserRepository,
-    private val jwtUtil: JWTUtil
+    private val jwtUtil: JwtUtil
 ): AuthService {
     override fun login(loginRequest: LoginRequest) : String{
         val user =loginHelper(loginRequest)
@@ -24,7 +24,7 @@ class AuthServiceImpl(
     }
 
     override fun register(registerRequest: RegisterRequest) :String{
-        val exits=  userRepository.exitsByEmailOrUsername(registerRequest.email, registerRequest.password)
+        val exits=  userRepository.existsByEmailOrUsername(registerRequest.email, registerRequest.password)
         if(exits){
             throw AlreadyRegisteredException("User already registered")
         }

@@ -6,18 +6,21 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class MyCustomUserDetailsService(
     private val userRepository: UserRepository,
 ): UserDetailsService {
-    override fun loadUserByUsername(username: String?): UserDetails? {
-        if (username == null) {
-            throw AuthenticationException("Username cannot be null or empty")
+    override  fun loadUserByUsername(username: String): UserDetails {
+        val userId =try {
+            UUID.fromString(username)
         }
-        val user = userRepository.findByUsername(username)
-            ?: throw UsernameNotFoundException("Username not found")
-    return MyCustomUserDetails(user)
+        catch (e: IllegalArgumentException){
+            throw AuthenticationException("Invalid id")
+        }
+        val user = userRepository.findById(userId).orElseThrow { AuthenticationException("User not found") }
+        return MyCustomUserDetails(user)
 
     }
 }

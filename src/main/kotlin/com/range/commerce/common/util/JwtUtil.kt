@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 import java.util.*
 import javax.crypto.SecretKey
 @Component
-class JWTUtil {
+class JwtUtil {
 
     @Value("\${app.secret}")
     lateinit var secret: String
@@ -29,10 +29,10 @@ class JWTUtil {
     fun key(): SecretKey{
         return Keys.hmacShaKeyFor(secret.toByteArray())
     }
-    fun getUserId(token: String): UUID {
+    fun getUserId(token: String): String {
         val id =Jwts.parser().verifyWith(key())
-            .build().parseClaimsJws(token).payload.subject
-        return UUID.fromString(id)
+            .build().parseSignedClaims(token).payload.subject
+        return id
     }
     fun parseToken(token: String): Claims {
         return Jwts
@@ -43,7 +43,7 @@ class JWTUtil {
             .getPayload()
 
     }
-    fun validateToken(token: String,userDetails : UserDetails): Boolean {
+    fun validateToken(token: String, userDetails: UserDetails): Boolean {
         val claim = parseToken(token)
 
         val username = claim.subject
