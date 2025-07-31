@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 
-@RequestMapping("\${apiversion}/api/auth")
+@RequestMapping("\${app.base-url}/auth")
 interface AuthApi {
     @PostMapping("/login")
     fun login(@RequestBody @Valid loginRequest: LoginRequest): ResponseEntity<String>
