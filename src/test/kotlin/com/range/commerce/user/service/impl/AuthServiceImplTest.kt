@@ -6,6 +6,7 @@ import com.range.commerce.user.domain.model.User
 import com.range.commerce.user.domain.repository.UserRepository
 import com.range.commerce.user.dto.request.LoginRequest
 import com.range.commerce.user.dto.request.RegisterRequest
+import com.range.commerce.user.exception.AlreadyRegisteredException
 import com.range.commerce.user.exception.AuthenticationException
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -54,8 +55,7 @@ class AuthServiceImplTest {
 
         //stub
         every { jwtUtil.generateToken(user, Role.ROLE_USER) } returns "token"
-        every{userRepository.findByEmail(any())}.returns(user)
-        every { userRepository.findByUsername(any()) } returns user
+        every { userRepository.findByUsername(any()) } returns Optional.of(user)
         every { passwordEncoder.matches(any(),any()) }returns true
 
 
@@ -63,15 +63,13 @@ class AuthServiceImplTest {
 
     @Test
     fun `login success with username and password`() {
-
-
-
         val result =authService.login(loginRequest)
         assertEquals(result,"token")
     }
 
     @Test
     fun `login success with email and password`() {
+        every{userRepository.findByEmail(any())} returns Optional.of(user)
         val result =authService.login(loginRequest = LoginRequest("token@test.com","test"))
         assertEquals(result,"token")
     }
@@ -83,8 +81,14 @@ class AuthServiceImplTest {
 
     @Test
     fun `should throw exception on when username not found`() {
-        every{userRepository.findByUsername(any())} returns null
+        every{userRepository.findByUsername(any())} returns Optional.empty()
         assertThrows <AuthenticationException> {authService.login(loginRequest)}
+    }
+    @Test
+    fun `should throw exception on when Email not found`() {
+        val loginRequestTest= LoginRequest("username@test.com", "password")
+        every{userRepository.findByEmail(any())} returns Optional.empty()
+        assertThrows <AuthenticationException> {authService.login(loginRequestTest)}
     }
 
 
@@ -98,5 +102,15 @@ class AuthServiceImplTest {
         val result =authService.register(registerRequest = RegisterRequest(user.email, user.username,user.password))
         assertEquals(result,"token")
     }
+    @Test
+    fun `should Throw exception when account found`(){
+        every { userRepository.existsByEmailOrUsername(any(), any()) } returns true
+        assertThrows<AlreadyRegisteredException>
+        {authService.register(registerRequest =
+            RegisterRequest(user.email, user.username,user.password))}
+
+    }
 
 }
+
+

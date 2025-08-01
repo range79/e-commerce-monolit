@@ -56,13 +56,13 @@ class AuthServiceImpl(
     }
     private fun emailLogin(loginRequest: LoginRequest): User {
         val user = userRepository.findByEmail(loginRequest.identifier)
-            ?: throw AuthenticationException("Invalid username or password")
+            .orElseThrow{AuthenticationException("Invalid username or password")}
         checkPass(user.password, loginRequest.password)
         return user
     }
     private fun usernameLogin(loginRequest: LoginRequest): User {
         val user = userRepository.findByUsername(loginRequest.identifier)
-            ?: throw AuthenticationException("Invalid username or password")
+            .orElseThrow {  AuthenticationException("Invalid username or password")}
         checkPass(user.password, loginRequest.password)
         return user
     }
