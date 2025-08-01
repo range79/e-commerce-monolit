@@ -34,6 +34,18 @@ class AuthServiceImplTest {
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
+        //entities
+        user = User(
+            id = UUID.randomUUID(),
+            username = "test",
+            password = "test",
+            email = "test@gmail.com",
+            role = Role.ROLE_USER,
+        )
+
+        loginRequest= LoginRequest("username", "password")
+        registerRequest = RegisterRequest("username", "somemail@gmail.com", "password")
+
         authService= AuthServiceImpl(passwordEncoder, userRepository, jwtUtil)
 
 
@@ -46,16 +58,7 @@ class AuthServiceImplTest {
         every { userRepository.findByUsername(any()) } returns user
         every { passwordEncoder.matches(any(),any()) }returns true
 
-        //entities
-        loginRequest= LoginRequest("username", "password")
-        registerRequest = RegisterRequest("username", "somemail@gmail.com", "password")
-        user = User(
-            id = UUID.randomUUID(),
-            username = "test",
-            password = "test",
-            email = "test@gmail.com",
-            role = Role.ROLE_USER,
-        )
+
     }
 
     @Test

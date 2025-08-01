@@ -33,15 +33,19 @@ class CategoryServiceImpl(
     }
 
     override fun delete(id: Long) {
-        return categoryRepository.deleteById(id)
+       val category = findCategory(id)
+        return categoryRepository.delete(category)
     }
 
     override fun update(id: Long, name: String): Category {
-        val category = categoryRepository.findById(id).orElseThrow{
-            CategoryNotFoundException("Category $id")
-        }
+        val category = findCategory(id)
         category.category_name=name
         return categoryRepository.save(category)
 
+    }
+    private fun findCategory(id: Long): Category {
+        return categoryRepository.findById(id).orElseThrow{
+            CategoryNotFoundException("Category $id Not Found")
+        }
     }
 }
