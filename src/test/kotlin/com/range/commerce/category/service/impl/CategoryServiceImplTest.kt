@@ -2,24 +2,18 @@ package com.range.commerce.category.service.impl
 
 import com.range.commerce.category.domain.enttity.Category
 import com.range.commerce.category.domain.repository.CategoryRepository
+import com.range.commerce.category.dto.CategoryRequest
 import com.range.commerce.category.exception.CategoryNotFoundException
-import io.mockk.MockKAnnotations
-import io.mockk.Runs
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import io.mockk.just
-import io.mockk.verify
-import net.bytebuddy.matcher.ElementMatchers.any
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.Mockito.verify
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import java.util.Optional
+import java.util.*
 
 class CategoryServiceImplTest {
     @MockK
@@ -40,9 +34,17 @@ class CategoryServiceImplTest {
 
     @Test
     fun create() {
+        val request = CategoryRequest("nam")
+        val entity = Category(null, "nam")
+        val savedEntity = Category(1L, "nam")
 
-        val result =  service.create(name)
-        assertEquals(result, category)
+        every { categoryRepository.save(any()) } returns savedEntity
+
+
+        service.create(request)
+
+        verify(exactly = 1) { categoryRepository.save(entity) }
+
     }
 
     @Test
@@ -103,4 +105,4 @@ class CategoryServiceImplTest {
         }
 
     }
-    }
+}

@@ -2,6 +2,7 @@ package com.range.commerce.category.service.impl
 
 import com.range.commerce.category.domain.enttity.Category
 import com.range.commerce.category.domain.repository.CategoryRepository
+import com.range.commerce.category.dto.CategoryRequest
 import com.range.commerce.category.exception.CategoryNotFoundException
 import com.range.commerce.category.service.CategoryService
 import org.springframework.data.domain.Page
@@ -16,12 +17,12 @@ class CategoryServiceImpl(
 
 
 
-    override fun create(name: String): Category {
+    override fun create(request: CategoryRequest) {
         val category = Category(
             null,
-            name,
+            request.name,
         )
-        return categoryRepository.save(category)
+        categoryRepository.save(category)
     }
 
     override fun findAll(
